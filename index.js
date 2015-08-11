@@ -1,6 +1,6 @@
  var request = require("request")
 // 
-function fetch_app(appid){
+function fetch_app_wandoujia(appid){
   request.get("http://www.wandoujia.com/apps/"+appid,function(err,response,body){
     var cheerio = require('cheerio');
 
@@ -17,13 +17,29 @@ function fetch_app(appid){
 }
 
 
+function fetch_app_hiapk(appid){
+  request.get("http://apk.hiapk.com/appinfo/"+appid,function(err,response,body){
+    var cheerio = require('cheerio');
+
+    $ = cheerio.load(body);
+    console.log($("#appSoftName").text())
+    console.log($("#softIntroduce").text())
+
+    var screenshots = $("#screenImgUl").children();
+    for(var i=0;i<screenshots.length;i++){
+      screenshot = screenshots[i];
+      console.log($($(screenshot).children()[0]).attr("href"))
+    }
+  })
+}
+
 process.stdin.setEncoding('utf8');
 console.log("输入appid:")
 process.stdin.on('readable', function() {
   var chunk = process.stdin.read();
   if (chunk !== null) {
     process.stdout.write('data: ' + chunk);
-    fetch_app(chunk)
+    fetch_app_hiapk(chunk)
   }
 });
 
